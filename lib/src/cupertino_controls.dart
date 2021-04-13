@@ -222,10 +222,53 @@ class _CupertinoControlsState extends State<CupertinoControls>
     );
   }
 
-  Expanded _buildHitArea() {
-    final bool isFinished = _latestValue.duration != null &&
-        _latestValue.position >= _latestValue.duration;
+  Widget _centerWidget() {
+    if (chewieController.showCenterControl) {
+      final bool isFinished = _latestValue.duration != null &&
+          _latestValue.position >= _latestValue.duration;
+      return Container(
+        color: Colors.transparent,
+        child: Center(
+          child: AnimatedOpacity(
+            opacity:
+            _latestValue != null && !_latestValue.isPlaying && !_dragging
+                ? 1.0
+                : 0.0,
+            duration: const Duration(milliseconds: 300),
+            child: GestureDetector(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: widget.backgroundColor,
+                  borderRadius: BorderRadius.circular(48.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: IconButton(
+                      icon: isFinished
+                          ? Icon(Icons.replay,
+                          size: 32.0, color: widget.iconColor)
+                          : AnimatedIcon(
+                          icon: AnimatedIcons.play_pause,
+                          progress: playPauseIconAnimationController,
+                          size: 32.0,
+                          color: widget.iconColor),
+                      onPressed: () {
+                        _playPause();
+                      }),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        color: Colors.transparent,
+      );
+    }
+  }
 
+  Expanded _buildHitArea() {
     return Expanded(
       child: GestureDetector(
         onTap: _latestValue != null && _latestValue.isPlaying
@@ -237,41 +280,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
                   _hideStuff = false;
                 });
               },
-        child: Container(
-          color: Colors.transparent,
-          child: Center(
-            child: AnimatedOpacity(
-              opacity:
-                  _latestValue != null && !_latestValue.isPlaying && !_dragging
-                      ? 1.0
-                      : 0.0,
-              duration: const Duration(milliseconds: 300),
-              child: GestureDetector(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: widget.backgroundColor,
-                    borderRadius: BorderRadius.circular(48.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: IconButton(
-                        icon: isFinished
-                            ? Icon(Icons.replay,
-                                size: 32.0, color: widget.iconColor)
-                            : AnimatedIcon(
-                                icon: AnimatedIcons.play_pause,
-                                progress: playPauseIconAnimationController,
-                                size: 32.0,
-                                color: widget.iconColor),
-                        onPressed: () {
-                          _playPause();
-                        }),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+        child: _centerWidget(),
       ),
     );
   }

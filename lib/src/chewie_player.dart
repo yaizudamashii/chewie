@@ -220,6 +220,7 @@ class ChewieController extends ChangeNotifier {
     this.overlay,
     this.showControlsOnInitialize = true,
     this.showControls = true,
+    this.showCenterControl = true,
     this.customControls,
     this.errorBuilder,
     this.allowedScreenSleep = true,
@@ -260,6 +261,9 @@ class ChewieController extends ChangeNotifier {
 
   /// Whether or not to show the controls at all
   final bool showControls;
+
+  /// if using default controls, show the center play/pause/replay button or not
+  final bool showCenterControl;
 
   /// Defines customised controls. Check [MaterialControls] or
   /// [CupertinoControls] for reference.

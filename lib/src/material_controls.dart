@@ -170,9 +170,52 @@ class _MaterialControlsState extends State<MaterialControls>
     );
   }
 
-  Expanded _buildHitArea() {
-    final bool isFinished = _latestValue.position >= _latestValue.duration;
+  Widget _centerWidget() {
+    if (chewieController.showCenterControl) {
+      final bool isFinished = _latestValue.position >= _latestValue.duration;
+      return Container(
+        color: Colors.transparent,
+        child: Center(
+          child: AnimatedOpacity(
+            opacity:
+            _latestValue != null && !_latestValue.isPlaying && !_dragging
+                ? 1.0
+                : 0.0,
+            duration: const Duration(milliseconds: 300),
+            child: GestureDetector(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).dialogBackgroundColor,
+                  borderRadius: BorderRadius.circular(48.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: IconButton(
+                    icon: isFinished
+                      ? const Icon(Icons.replay, size: 32.0)
+                      : AnimatedIcon(
+                      icon: AnimatedIcons.play_pause,
+                      progress: playPauseIconAnimationController,
+                      size: 32.0,
+                    ),
+                    onPressed: () {
+                    _playPause();
+                    }
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        color: Colors.transparent,
+      );
+    }
+  }
 
+  Expanded _buildHitArea() {
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -192,40 +235,7 @@ class _MaterialControlsState extends State<MaterialControls>
             });
           }
         },
-        child: Container(
-          color: Colors.transparent,
-          child: Center(
-            child: AnimatedOpacity(
-              opacity:
-                  _latestValue != null && !_latestValue.isPlaying && !_dragging
-                      ? 1.0
-                      : 0.0,
-              duration: const Duration(milliseconds: 300),
-              child: GestureDetector(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).dialogBackgroundColor,
-                    borderRadius: BorderRadius.circular(48.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: IconButton(
-                        icon: isFinished
-                            ? const Icon(Icons.replay, size: 32.0)
-                            : AnimatedIcon(
-                                icon: AnimatedIcons.play_pause,
-                                progress: playPauseIconAnimationController,
-                                size: 32.0,
-                              ),
-                        onPressed: () {
-                          _playPause();
-                        }),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+        child: _centerWidget(),
       ),
     );
   }
